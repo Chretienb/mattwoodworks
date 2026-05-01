@@ -16,4 +16,11 @@ export default defineConfig({
       },
     },
   },
+  // Top-level — do not nest under `server` or Vite ignores it.
+  preview: {
+    proxy: {
+      '/api': { target: 'http://127.0.0.1:8080', changeOrigin: true },
+      '/health': { target: 'http://127.0.0.1:8080', changeOrigin: true },
+    },
+  },
 })

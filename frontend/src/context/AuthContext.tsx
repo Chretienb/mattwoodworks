@@ -15,7 +15,7 @@ type AuthContextValue = {
   hydrated: boolean
   token: string | null
   user: AdminMeResponse | null
-  signIn: (email: string, password: string) => Promise<void>
+  signIn: (password: string) => Promise<void>
   signOut: () => void
 }
 
@@ -44,8 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setHydrated(true))
   }, [])
 
-  const signIn = useCallback(async (email: string, password: string) => {
-    const { token: next } = await loginRequest(email, password)
+  const signIn = useCallback(async (password: string) => {
+    const { token: next } = await loginRequest(password)
     sessionStorage.setItem(STORAGE_KEY, next)
     setToken(next)
     const me = await adminMeRequest(next)

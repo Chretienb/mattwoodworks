@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { RequireAdmin } from './routes/RequireAdmin'
 import { AdminDashboard } from './pages/AdminDashboard'
 import { AdminLayout } from './pages/AdminLayout'
+import { AdminLeadsPage } from './pages/AdminLeadsPage'
 import { AdminPortfolioPage } from './pages/AdminPortfolioPage'
 import { AdminSitePage } from './pages/AdminSitePage'
 import { HomePage } from './pages/HomePage'
@@ -19,6 +20,7 @@ export default function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="site" element={<AdminSitePage />} />
           <Route path="portfolio" element={<AdminPortfolioPage />} />
+          <Route path="leads" element={<AdminLeadsPage />} />
         </Route>
       </Route>
 

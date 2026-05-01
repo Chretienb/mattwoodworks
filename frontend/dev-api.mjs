@@ -14,13 +14,19 @@ const SITE_FILE = join(__dirname, 'site-content.json')
 const UPLOAD_DIR = join(__dirname, 'public', 'images', 'uploads')
 const ESTIMATES_FILE = join(__dirname, 'estimate_requests.jsonl')
 
+const ADMIN_EMAIL = String(process.env.MHW_ADMIN_EMAIL ?? 'admin@mattwoodworks.local')
+  .trim()
+  .toLowerCase()
+
+const ADMIN_PASSWORD = String(process.env.MHW_ADMIN_PASSWORD ?? 'devpassword')
+
 /** @type {Map<string, { password: string, email: string, role: string }>} */
 const USERS = new Map([
   [
-    'admin@mattwoodworks.local',
+    ADMIN_EMAIL,
     {
-      password: 'devpassword',
-      email: 'admin@mattwoodworks.local',
+      password: ADMIN_PASSWORD,
+      email: ADMIN_EMAIL,
       role: 'admin',
     },
   ],
@@ -91,7 +97,10 @@ mkdirSync(UPLOAD_DIR, { recursive: true })
 const server = http.createServer(async (req, res) => {
   const host = req.headers.host ?? '127.0.0.1'
   const url = new URL(req.url ?? '/', `http://${host}`)
-  const path = url.pathname
+  let path = url.pathname
+  if (path !== '/' && path.endsWith('/')) {
+    path = path.slice(0, -1)
+  }
 
   if (req.method === 'GET' && path === '/health') {
     return sendJson(res, 200, { ok: true })
@@ -105,13 +114,10 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'POST' && path === '/api/auth/login') {
     try {
       const body = await parseBody(req)
-      const email = String(body.email ?? '')
-        .trim()
-        .toLowerCase()
       const password = String(body.password ?? '')
-      const user = USERS.get(email)
+      const user = USERS.get(ADMIN_EMAIL)
       if (!user || user.password !== password) {
-        return sendText(res, 401, 'Invalid email or password.')
+        return sendText(res, 401, 'Invalid password.')
       }
       const token = randomUUID()
       sessions.set(token, { email: user.email, role: user.role })
@@ -161,6 +167,49 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, { url: publicUrl })
     } catch {
       return sendText(res, 400, 'Upload failed.')
+    }
+  }
+
+  if (req.method === 'GET' && path === '/api/admin/estimates') {
+    const sess = getSession(req)
+    if (!sess) return sendText(res, 401, 'Unauthorized')
+    const raw = existsSync(ESTIMATES_FILE) ? readFileSync(ESTIMATES_FILE, 'utf8') : ''
+    const rows = raw
+      .split('\n')
+      .filter(Boolean)
+      .map((l) => { try { return JSON.parse(l) } catch { return null } })
+      .filter(Boolean)
+      .reverse()
+    return sendJson(res, 200, rows)
+  }
+
+  // PATCH /api/admin/estimates/:id  — update CRM fields in the local JSONL file
+  if (req.method === 'PATCH' && path.startsWith('/api/admin/estimates/')) {
+    const sess = getSession(req)
+    if (!sess) return sendText(res, 401, 'Unauthorized')
+    const id = path.slice('/api/admin/estimates/'.length)
+    if (!id) return sendText(res, 400, 'Missing id')
+    try {
+      const patch = await parseBody(req)
+      const allowed = ['status','notes','quote_amount','quote_sent_at','quote_accepted','follow_up_at','responded_at']
+      const raw = existsSync(ESTIMATES_FILE) ? readFileSync(ESTIMATES_FILE, 'utf8') : ''
+      const rows = raw
+        .split('\n')
+        .filter(Boolean)
+        .map((l) => { try { return JSON.parse(l) } catch { return null } })
+        .filter(Boolean)
+      const updated = rows.map((r) => {
+        if (r.id !== id) return r
+        const next = { ...r }
+        for (const k of allowed) {
+          if (Object.prototype.hasOwnProperty.call(patch, k)) next[k] = patch[k]
+        }
+        return next
+      })
+      writeFileSync(ESTIMATES_FILE, updated.map((r) => JSON.stringify(r)).join('\n') + '\n', 'utf8')
+      return sendJson(res, 200, { ok: true })
+    } catch {
+      return sendText(res, 400, 'Invalid request body.')
     }
   }
 

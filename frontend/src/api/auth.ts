@@ -10,18 +10,15 @@ export type AdminMeResponse = {
   role: string
 }
 
-export async function loginRequest(
-  email: string,
-  password: string,
-): Promise<LoginResponse> {
+export async function loginRequest(password: string): Promise<LoginResponse> {
   const res = await fetch(`${apiBase()}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ password }),
   })
 
   if (!res.ok) {
-    let detail = 'Could not sign in. Check email and password.'
+    let detail = 'Could not sign in. Check your password.'
     try {
       const text = await res.text()
       if (text) detail = text
