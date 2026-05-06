@@ -60,10 +60,10 @@ function TextArea({ value, onChange, rows = 3 }: { value: string; onChange: (v: 
 
 /* Image block: shows preview + upload button, no visible URL field */
 function ImageBlock({
-  label, src, alt, onSrc, onAlt, onFile,
+  label, src, alt, onAlt, onFile,
 }: {
   label: string; src: string; alt: string
-  onSrc: (v: string) => void; onAlt: (v: string) => void; onFile: (f: File) => void
+  onSrc?: (v: string) => void; onAlt: (v: string) => void; onFile: (f: File) => void
 }) {
   return (
     <div className="cms-img-block">
