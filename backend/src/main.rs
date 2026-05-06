@@ -670,7 +670,11 @@ async fn main() {
         .layer(CorsLayer::permissive())
         .with_state(state);
 
-    let bind = std::env::var("MHW_BIND").unwrap_or_else(|_| "127.0.0.1:8080".into());
+    // Render sets PORT; MHW_BIND overrides everything; fallback to 0.0.0.0:PORT or local default.
+    let bind = std::env::var("MHW_BIND").unwrap_or_else(|_| {
+        let port = std::env::var("PORT").unwrap_or_else(|_| "8080".into());
+        format!("0.0.0.0:{port}")
+    });
     let listener = tokio::net::TcpListener::bind(&bind)
         .await
         .unwrap_or_else(|e| panic!("bind {bind}: {e}"));

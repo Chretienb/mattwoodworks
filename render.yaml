@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: mhw-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    envVars:
+      - key: MHW_BIND
+        value: 0.0.0.0:10000
+      - key: MHW_ADMIN_EMAIL
+        sync: false
+      - key: MHW_ADMIN_PASSWORD
+        sync: false
+      - key: MHW_JWT_SECRET
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: ADMIN_NOTIFY_EMAIL
+        sync: false
