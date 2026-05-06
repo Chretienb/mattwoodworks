@@ -370,82 +370,80 @@ export function HomePage() {
             </div>
           </div>
           <div className="mhw-lx2-contact-right">
-            <div className="mhw-lx2-s-eyebrow" style={{ marginBottom: '2.5rem' }}>
-              <span className="mhw-lx2-s-eyebrow-line" aria-hidden="true" />
-              <span className="mhw-lx2-s-eyebrow-text">{contact.formEyebrow}</span>
-            </div>
-            <form
-              className="mhw-lx2-cf-row"
-              onSubmit={(ev) => {
-                void submitEnquiry(ev)
-              }}
-              onInput={onEnquiryFormChange}
-            >
-              <div className="mhw-lx2-cf-2col">
-                <input
-                  name="firstName"
-                  className="mhw-lx2-cf-input"
-                  type="text"
-                  autoComplete="given-name"
-                  placeholder="First name"
-                />
-                <input
-                  name="lastName"
-                  className="mhw-lx2-cf-input"
-                  type="text"
-                  autoComplete="family-name"
-                  placeholder="Last name"
-                />
+            {enquiryStatus === 'sent' ? (
+              <div className="cf2-success">
+                <div className="cf2-success-icon" aria-hidden="true">
+                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="15" stroke="currentColor" strokeWidth="1.5"/>
+                    <path d="M10 16.5l4 4 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <h3 className="cf2-success-title">Request received</h3>
+                <p className="cf2-success-sub">We'll be in touch within 24 hours to discuss your project.</p>
+                {enquiryDetail && <p className="cf2-success-note">{enquiryDetail}</p>}
               </div>
-              <input
-                name="email"
-                className="mhw-lx2-cf-input"
-                type="email"
-                autoComplete="email"
-                placeholder="Email address"
-                required
-              />
-              <input
-                name="phone"
-                className="mhw-lx2-cf-input"
-                type="tel"
-                autoComplete="tel"
-                placeholder="Phone number"
-              />
-              <input
-                name="project"
-                className="mhw-lx2-cf-input"
-                type="text"
-                placeholder="Project type (e.g. dining table, media wall)"
-              />
-              <textarea
-                name="message"
-                className="mhw-lx2-cf-input mhw-lx2-cf-textarea"
-                placeholder="Describe your vision, dimensions, preferred species…"
-              />
-              <button
-                type="submit"
-                className="mhw-lx2-btn-gold"
-                style={{ width: 'fit-content' }}
-                disabled={enquiryStatus === 'sending'}
-              >
-                {enquiryStatus === 'sending' ? 'Sending…' : 'Submit enquiry →'}
-              </button>
-              {enquiryDetail ? (
-                <p
-                  role="status"
-                  className={`mhw-lx2-cf-status${enquiryStatus === 'sent' ? ' is-success' : ''}${enquiryStatus === 'error' ? ' is-error' : ''}`}
+            ) : (
+              <>
+                <h3 className="cf2-form-title">Get your free estimate</h3>
+                <p className="cf2-form-sub">Tell us about your project — we'll respond within 24 hours.</p>
+                <form
+                  className="cf2-form"
+                  onSubmit={(ev) => { void submitEnquiry(ev) }}
+                  onInput={onEnquiryFormChange}
                 >
-                  {enquiryDetail}
-                </p>
-              ) : null}
-              {enquiryStatus === 'error' ? (
-                <p className="mhw-lx2-cf-fallback">
-                  Or email directly:{' '}
-                  <a href={`mailto:${content.contact.email}`}>{content.contact.email}</a>
-                </p>
-              ) : null}
-            </form>
+                  <div className="cf2-row-2col">
+                    <div className="cf2-field">
+                      <input name="firstName" className="cf2-input" type="text" autoComplete="given-name" placeholder=" " />
+                      <label className="cf2-label">First name</label>
+                    </div>
+                    <div className="cf2-field">
+                      <input name="lastName" className="cf2-input" type="text" autoComplete="family-name" placeholder=" " />
+                      <label className="cf2-label">Last name</label>
+                    </div>
+                  </div>
+                  <div className="cf2-field">
+                    <input name="email" className="cf2-input" type="email" autoComplete="email" placeholder=" " required />
+                    <label className="cf2-label">Email address <span className="cf2-required">*</span></label>
+                  </div>
+                  <div className="cf2-field">
+                    <input name="phone" className="cf2-input" type="tel" autoComplete="tel" placeholder=" " />
+                    <label className="cf2-label">Phone number</label>
+                  </div>
+                  <div className="cf2-field">
+                    <input name="project" className="cf2-input" type="text" placeholder=" " />
+                    <label className="cf2-label">Project type</label>
+                    <span className="cf2-hint">e.g. dining table, media wall, built-in shelving</span>
+                  </div>
+                  <div className="cf2-field">
+                    <textarea name="message" className="cf2-input cf2-textarea" placeholder=" " />
+                    <label className="cf2-label">Describe your vision</label>
+                    <span className="cf2-hint">Dimensions, preferred wood species, timeline…</span>
+                  </div>
+                  <button type="submit" className="cf2-submit" disabled={enquiryStatus === 'sending'}>
+                    {enquiryStatus === 'sending' ? (
+                      <>
+                        <span className="cf2-spinner" aria-hidden="true" />
+                        Sending…
+                      </>
+                    ) : (
+                      <>
+                        Request free estimate
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </>
+                    )}
+                  </button>
+                  {enquiryStatus === 'error' && enquiryDetail && (
+                    <p role="alert" className="cf2-error-msg">
+                      {enquiryDetail}
+                      {' — or email '}
+                      <a href={`mailto:${content.contact.email}`}>{content.contact.email}</a>
+                    </p>
+                  )}
+                </form>
+              </>
+            )}
           </div>
         </section>
       </main>
