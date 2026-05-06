@@ -88,11 +88,17 @@ export function HomePage() {
             </h1>
             <p className="mhw-lx2-h-body">{hero.body}</p>
             <div className="mhw-lx2-h-actions">
-              <a className="mhw-lx2-btn-gold" href="#contact">
+              <a className="hero-btn-primary" href="#contact">
                 Commission a piece
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </a>
-              <a className="mhw-lx2-btn-ghost" href="#portfolio">
+              <a className="hero-btn-secondary" href="#portfolio">
                 View portfolio
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </a>
             </div>
             <div className="mhw-lx2-h-meta">

@@ -362,6 +362,58 @@
   align-items: center;
 }
 
+/* —— Hero CTA buttons —— */
+.hero-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: var(--lx2-charcoal);
+  color: var(--lx2-cream);
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 1rem 1.75rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.22s, transform 0.15s;
+}
+
+.hero-btn-primary:hover {
+  background: var(--lx2-terra);
+  transform: translateY(-1px);
+}
+
+.hero-btn-primary:active {
+  transform: translateY(0);
+}
+
+.hero-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: transparent;
+  color: var(--lx2-charcoal);
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 1rem 0;
+  border-bottom: 1.5px solid rgba(37, 34, 32, 0.2);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, gap 0.2s;
+}
+
+.hero-btn-secondary:hover {
+  color: var(--lx2-terra);
+  border-bottom-color: var(--lx2-terra);
+  gap: 0.7rem;
+}
+
 .mhw-lx2-btn-gold {
   font-family: 'Montserrat', system-ui, sans-serif;
   font-size: 0.5625rem;
